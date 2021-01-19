@@ -87,6 +87,7 @@ defmodule Ueberauth.Strategy.Steam do
     %Info{
       image: user.avatarfull,
       name: get_in(user, [:realname]),
+      nickname: get_in(user, [:personaname]),
       location: get_in(user, [:loccountrycode]),
       urls: %{
         Steam: user.profileurl,
