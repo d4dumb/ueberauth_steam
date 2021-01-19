@@ -85,7 +85,7 @@ defmodule Ueberauth.Strategy.Steam do
     user = conn.private.steam_user
 
     %Info{
-      image: user.avatar,
+      image: user.avatarfull,
       name: get_in(user, [:realname]),
       location: get_in(user, [:loccountrycode]),
       urls: %{
