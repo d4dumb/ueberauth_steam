@@ -124,7 +124,7 @@ defmodule Ueberauth.Strategy.Steam do
     url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" <> key <> "&steamids=" <> id
 
     with {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url),
-         {:ok, user} <- Poison.decode(body, keys: :atoms)
+         {:ok, user} <- Jason.decode(body, keys: :atoms)
     do
       List.first(user.response.players)
     else
