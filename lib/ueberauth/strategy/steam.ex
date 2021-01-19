@@ -72,7 +72,7 @@ defmodule Ueberauth.Strategy.Steam do
   """
   @spec uid(Plug.Conn.t) :: pos_integer
   def uid(conn) do
-    conn.private.steam_user.steamid |> String.to_integer
+    conn.private.steam_user["steamid"] |> String.to_integer
   end
 
   @doc ~S"""
@@ -85,12 +85,12 @@ defmodule Ueberauth.Strategy.Steam do
     user = conn.private.steam_user
 
     %Info{
-      image: user.avatarfull,
-      name: get_in(user, [:realname]),
-      nickname: get_in(user, [:personaname]),
-      location: get_in(user, [:loccountrycode]),
+      image: user["avatarfull"],
+      name: user["realname"],
+      nickname: user["personaname"],
+      location: user["loccountrycode"],
       urls: %{
-        Steam: user.profileurl,
+        Steam: user["profileurl"],
       }
     }
   end
@@ -116,7 +116,7 @@ defmodule Ueberauth.Strategy.Steam do
       "https://steamcommunity.com/openid/id/" <> id -> id
       _ -> raise "claimed_id matching error"
     end
-    
+
     key =
       :ueberauth
       |> Application.fetch_env!(Ueberauth.Strategy.Steam)
@@ -124,9 +124,9 @@ defmodule Ueberauth.Strategy.Steam do
     url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" <> key <> "&steamids=" <> id
 
     with {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url),
-         {:ok, user} <- Jason.decode(body, keys: :atoms)
+         {:ok, user} <- Jason.decode(body)
     do
-      List.first(user.response.players)
+      List.first(user["response"]["players"])
     else
       _ -> nil
     end
